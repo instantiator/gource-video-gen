@@ -38,6 +38,7 @@ done
 REPO_NAME=$(basename $REPO_PATH)
 AVATARS_PATH=avatars/
 LOGO_PATH=avatars/$REPO_NAME.png
+CAPTIONS_PATH=captions/$REPO_NAME.txt
 
 echo Generating video...
 echo Repository path: $REPO_PATH
@@ -69,6 +70,12 @@ EOC
 if [ -e $LOGO_PATH ]
 then
   GOURCE_CMD="$GOURCE_CMD --logo $LOGO_PATH"
+fi
+
+# if the captions exist, tell gource about them
+if [ -e $CAPTIONS_PATH ]
+then
+  GOURCE_CMD="$GOURCE_CMD --caption-file $CAPTIONS_PATH"
 fi
 
 # generate new video
