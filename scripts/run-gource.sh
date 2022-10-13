@@ -7,6 +7,7 @@ usage() {
   cat << EOF
 Usage:
     -r      --repo              Path to the repository to use
+    -o      --output-video-path Path to the output video to write to
     -h      --help              Prints this help message and exits
 EOF
 }
@@ -16,6 +17,10 @@ while [ -n "$1" ]; do
   -r | --repo)
     shift
     REPO_PATH=$1
+    ;;
+  -o | --output-video-path)
+    shift
+    VIDEO_PATH=$1
     ;;
   -h | --help)
     usage
@@ -31,7 +36,6 @@ while [ -n "$1" ]; do
 done
 
 REPO_NAME=$(basename $REPO_PATH)
-VIDEO_PATH=results/$REPO_NAME.mp4
 AVATARS_PATH=avatars/
 LOGO_PATH=avatars/$REPO_NAME.png
 
@@ -46,6 +50,7 @@ then
     mv $VIDEO_PATH $VIDEO_PATH.backup
 fi
 
+# prepare gource command to generate the video
 GOURCE_CMD=$(cat << EOC
   gource -1280x720 --title $REPO_NAME \
     --path $REPO_PATH \
@@ -60,15 +65,18 @@ GOURCE_CMD=$(cat << EOC
 EOC
 )
 
+# if the logo exists, tell gource about it
 if [ -e $LOGO_PATH ]
 then
   GOURCE_CMD="$GOURCE_CMD --logo $LOGO_PATH"
 fi
 
-echo $GOURCE_CMD
-
 # generate new video
+echo Generating video with gource...
+echo $GOURCE_CMD
 xvfb-run $GOURCE_CMD | ffmpeg -i - $VIDEO_PATH
+
+# common gource options, for reference...
 
 # -1280x720 # dimensions or 854x480 (smaller)
 # --camera-mode track
