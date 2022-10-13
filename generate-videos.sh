@@ -8,5 +8,6 @@ docker run \
   -v $(pwd)/mp3s:/src/mp3s \
   -v $(pwd)/repos:/src/repos \
   -v $(pwd)/results:/src/results \
+  -v $(pwd)/captions:/src/captions \
   -it \
   gource-video-gen
