@@ -57,7 +57,7 @@ GOURCE_CMD=$(cat << EOC
     --path $REPO_PATH \
     --user-image-dir $AVATARS_PATH \
     --output-framerate 25 \
-    --seconds-per-day 0.5 \
+    --seconds-per-day 0.66 \
     --hide filenames \
     --highlight-users \
     --file-filter ^\. \
@@ -75,7 +75,7 @@ fi
 # if the captions exist, tell gource about them
 if [ -e $CAPTIONS_PATH ]
 then
-  GOURCE_CMD="$GOURCE_CMD --caption-file $CAPTIONS_PATH"
+  GOURCE_CMD="$GOURCE_CMD --caption-file $CAPTIONS_PATH --caption-colour FFFF88"
 fi
 
 # generate new video
