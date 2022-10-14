@@ -12,19 +12,19 @@ Runs gource, creates video.
 * Launch gource inside Docker:
 
   ```sh
-  generate-videos.sh
+  ./generate-videos.sh
   ```
 
 ### Activity
 
 * Scans `repos/`, assumes each directory is a repository
-* For each repository:
     * Uses `xvfb` to run `gource` in "headless" mode
     * Uses `ffmpeg` to generate an mp4 from the gource output
     * Stores output mp4 in `results/`, named after the repository
 
 ## Optional enhancements
 
+* Use `./init-directories.sh` to create the initial directories.
 * Put avatars into the avatars folder, match the _name_ of their account (not username), eg. `Firstname Lastname.png`
 * Put a logo in the `avatars/` folder, name it after its repository
 * Put mp3s into the `mp3s/` folder, name each after the repo, eg. `my-repository.mp3`
