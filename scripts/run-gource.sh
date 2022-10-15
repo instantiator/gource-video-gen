@@ -84,7 +84,7 @@ GOURCE_CMD=$(cat << EOC
     --seconds-per-day 0.66 \
     --hide filenames \
     --highlight-users \
-    --file-filter di-ipv-spot/\.idea/.* \
+    --file-filter .*/\.idea/.* \
     --auto-skip-seconds 1 \
     -o -
 EOC
