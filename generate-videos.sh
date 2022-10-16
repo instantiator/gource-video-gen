@@ -7,6 +7,7 @@ usage() {
   cat << EOF
 Usage:
     -c      --combine           Combines histories and captions for all repositories found
+    -a      --anonymise         Generates anonymous video (no names, no directories, no filenames)
     -t      --title             Title for the combined video (use with --combine)
     -h      --help              Prints this help message and exits
 EOF
@@ -14,6 +15,7 @@ EOF
 
 # defaults
 COMBINE=false
+ANON=false
 TITLE=Repositories
 
 # parameters
@@ -21,6 +23,9 @@ while [ -n "$1" ]; do
   case $1 in
   -c | --combine)
     COMBINE=true
+    ;;
+  -a | --anonymise)
+    ANON=true
     ;;
   -t | --title)
     shift
@@ -44,6 +49,7 @@ done
 
 echo Initiating video generation
 echo Combine repositories: $COMBINE
+echo Anonymise: $ANON
 
 docker run \
   -v $(pwd)/avatars:/src/avatars \
@@ -52,4 +58,4 @@ docker run \
   -v $(pwd)/results:/src/results \
   -v $(pwd)/captions:/src/captions \
   -it \
-  gource-video-gen --combine "$COMBINE" --title "$TITLE"
+  gource-video-gen --combine "$COMBINE" --anonymise "$ANON" --title "$TITLE"
