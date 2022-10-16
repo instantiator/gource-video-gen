@@ -7,16 +7,26 @@ usage() {
   cat << EOF
 Usage:
     -c      --combine           Combine all repository histories and captions
+    -a      --anonymise         Anonymous videos - hide names, filenames, directories
     -t      --title             Title for the combined video (use with --combine)
     -h      --help              Prints this help message and exits
 EOF
 }
 
+# defaults
+COMBINE=false
+ANON=false
+
+# parameters
 while [ -n "$1" ]; do
   case $1 in
   -c | --combine)
     shift
     COMBINE=$1
+    ;;
+  -a | --anonymise)
+    shift
+    ANON=$1
     ;;
   -t | --title)
     shift
@@ -37,6 +47,7 @@ done
 
 echo "Generating all videos..."
 echo Combine repositories: $COMBINE
+echo Anonymise: $ANON
 
 # working directory
 WORK=work
@@ -71,20 +82,28 @@ if $COMBINE; then
   COMBINED_CAPTIONS_PATH=$WORK/combined.captions
   cat captions/*.txt | sort -n > $COMBINED_CAPTIONS_PATH
 
+  # video paths
+  if $ANON; then
+    SILENT_VIDEO_PATH=results/combined.anon.silent.mp4
+    VIDEO_PATH=results/combined.anon.audio.mp4
+  else
+    SILENT_VIDEO_PATH=results/combined.silent.mp4
+    VIDEO_PATH=results/combined.audio.mp4
+  fi
+
   # build video from combined histories and captions
-  SILENT_VIDEO_PATH=results/combined.silent.mp4
   ./run-gource.sh \
     --title "$TITLE" \
     --repo "$COMBINED_LOG_PATH" \
     --output-video-path "$SILENT_VIDEO_PATH" \
     --captions "$COMBINED_CAPTIONS_PATH" \
     --logo-path avatars/combined.png \
+    --anonymise "$ANON" \
     --hide-root
 
-  AUDIO_PATH=mp3s/combined.mp3
-  VIDEO_PATH=results/combined.audio.mp4
   if [ -e $AUDIO_PATH ]
   then
+    AUDIO_PATH=mp3s/combined.mp3
     ./apply-audio.sh \
       --input-video "$SILENT_VIDEO_PATH" \
       --input-audio "$AUDIO_PATH" \
@@ -115,10 +134,16 @@ else
     COMBINED_LOG_PATH=$WORK/all-repos.log.combined.txt
     cat $WORK/*.log.txt | sort -n > $COMBINED_LOG_PATH
 
+    # video paths
+    if $ANON; then
+      SILENT_VIDEO_PATH=results/$REPO_NAME.anon.silent.mp4
+      VIDEO_PATH=results/$REPO_NAME.anon.audio.mp4
+    else
+      SILENT_VIDEO_PATH=results/$REPO_NAME.silent.mp4
+      VIDEO_PATH=results/$REPO_NAME.audio.mp4
+    fi
+
     # generate video for the repo
-    AUDIO_PATH=mp3s/$REPO_NAME.mp3
-    SILENT_VIDEO_PATH=results/$REPO_NAME.silent.mp4
-    VIDEO_PATH=results/$REPO_NAME.audio.mp4
     CAPTIONS_PATH=captions/$REPO_NAME.txt
     LOGO_PATH=avatars/$REPO_NAME.png
     ./run-gource.sh \
@@ -126,10 +151,12 @@ else
       --repo "$COMBINED_LOG_PATH" \
       --captions "$CAPTIONS_PATH" \
       --output-video-path "$SILENT_VIDEO_PATH" \
-      --logo-path "$LOGO_PATH"
+      --logo-path "$LOGO_PATH" \
+      --anonymise "$ANON"
 
     if [ -e $AUDIO_PATH ]
     then
+      AUDIO_PATH=mp3s/$REPO_NAME.mp3
       ./apply-audio.sh \
         --input-video "$SILENT_VIDEO_PATH" \
         --input-audio "$AUDIO_PATH" \

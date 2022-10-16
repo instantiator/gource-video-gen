@@ -8,6 +8,7 @@ usage() {
 Usage:
     -r      --repo              Path to the repository to use
     -o      --output-video-path Path to the output video to write to
+    -a      --anonymise         Anonymise (hide names, filenames, directories)
     -c      --captions          Path to the captions file to use
             --hide-root         Hides the root node (ie. when combining repositories)
     -t      --title             Title for the video
@@ -17,6 +18,7 @@ EOF
 
 # defaults
 HIDE_ROOT=false
+ANON=false
 
 # parameters
 while [ -n "$1" ]; do
@@ -40,6 +42,10 @@ while [ -n "$1" ]; do
   -o | --output-video-path)
     shift
     VIDEO_PATH=$1
+    ;;
+  -a | --anonymise)
+    shift
+    ANON=$1
     ;;
   --hide-root)
     HIDE_ROOT=true
@@ -67,6 +73,7 @@ echo Output path: $VIDEO_PATH
 echo Avatars path: $AVATARS_PATH
 echo Captions path: $CAPTIONS_PATH
 echo Logo path: $LOGO_PATH
+echo Anonymise: $ANON
 
 # backup previous video
 if [ -e $VIDEO_PATH ]
@@ -82,7 +89,6 @@ GOURCE_CMD=$(cat << EOC
     --user-image-dir $AVATARS_PATH \
     --output-framerate 25 \
     --seconds-per-day 0.66 \
-    --hide filenames \
     --highlight-users \
     --file-filter .*/\.idea/.* \
     --auto-skip-seconds 1 \
@@ -90,6 +96,14 @@ GOURCE_CMD=$(cat << EOC
 EOC
 )
 
+# hiding things
+HIDES=filenames
+if $ANON; then
+  HIDES="$HIDES,dirnames,usernames"
+fi
+GOURCE_CMD="$GOURCE_CMD --hide $HIDES"
+
+# hiding the root 
 if $HIDE_ROOT; then
   GOURCE_CMD="$GOURCE_CMD --hide-root"
 fi
