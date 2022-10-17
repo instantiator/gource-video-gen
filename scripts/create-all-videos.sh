@@ -55,7 +55,7 @@ mkdir -p $WORK
 
 if $COMBINE; then
   # empty working directory
-  rm -rf $WORK/* || # NOP
+  rm -rf $WORK/*
 
   # copy in all supplementary logs
   cp repos/*.log.txt $WORK/
@@ -101,9 +101,9 @@ if $COMBINE; then
     --anonymise "$ANON" \
     --hide-root
 
+  AUDIO_PATH=mp3s/combined.mp3
   if [ -e $AUDIO_PATH ]
   then
-    AUDIO_PATH=mp3s/combined.mp3
     ./apply-audio.sh \
       --input-video "$SILENT_VIDEO_PATH" \
       --input-audio "$AUDIO_PATH" \
@@ -121,7 +121,7 @@ else
     echo Found: $REPO_NAME
 
     # empty working directory
-    rm -rf $WORK/* || # NOP
+    rm -rf $WORK/*
 
     # copy in all supplementary logs
     cp repos/*.log.txt $WORK/
@@ -154,9 +154,9 @@ else
       --logo-path "$LOGO_PATH" \
       --anonymise "$ANON"
 
+    AUDIO_PATH=mp3s/$REPO_NAME.mp3
     if [ -e $AUDIO_PATH ]
     then
-      AUDIO_PATH=mp3s/$REPO_NAME.mp3
       ./apply-audio.sh \
         --input-video "$SILENT_VIDEO_PATH" \
         --input-audio "$AUDIO_PATH" \
