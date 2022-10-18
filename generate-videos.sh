@@ -5,7 +5,7 @@ set -o pipefail
 
 usage() {
   cat << EOF
-Usage:
+Options:
     -c      --combine           Combines histories and captions for all repositories found
     -a      --anonymise         Generates anonymous video (no names, no directories, no filenames)
     -t      --title             Title for the combined video (use with --combine)
