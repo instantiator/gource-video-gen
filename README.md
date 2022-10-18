@@ -15,6 +15,16 @@ Runs gource, creates videos. Simplifies mixing in audio, captions, a logo, and a
   ./generate-videos.sh
   ```
 
+### Options
+
+```
+Options:
+    -c      --combine           Combines histories and captions for all repositories found
+    -a      --anonymise         Generates anonymous video (no names, no directories, no filenames)
+    -t      --title             Title for the combined video (use with --combine)
+    -h      --help              Prints this help message and exits
+```
+
 ### Activity
 
 * Scans `repos/`, assumes each directory is a repository
