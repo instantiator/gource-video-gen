@@ -8,6 +8,7 @@ Runs gource, creates videos. Simplifies mixing in audio, captions, a logo, and a
 
 ## Usage
 
+* Run `./init-directories.sh` to create input and results directories.
 * Clone your favourite repositories inside `repos/`
 * Launch gource inside Docker:
 
