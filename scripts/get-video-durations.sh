@@ -3,6 +3,9 @@
 set -e
 set -o pipefail
 
+# header
+echo "duration,path"
+
 for RESULT_PATH in results/*.mp4; do
     # skip files that look like they already have a duration
     DURATION_s=$(ffprobe -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 $RESULT_PATH)
