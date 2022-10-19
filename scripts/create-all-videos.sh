@@ -167,3 +167,8 @@ else
     fi
   done
 fi
+
+# capture video durations (and rename video files by duration)
+./get-video-durations.sh > results/durations.csv
+cat results/durations.csv
+
