@@ -59,6 +59,9 @@ ffmpeg \
   -c:a aac -strict experimental \
   $OUT_VIDEO_PATH
 
+# remove the silent video if there's an audio one now
+rm $IN_VIDEO_PATH
+
 # some other ffmpeg options for reference...
 
 # -filter:a "volume=0.6" 
