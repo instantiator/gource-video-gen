@@ -106,13 +106,7 @@ CMD="${CMD} -filter_complex \"${ALL_FILTERS}\" -map \"[v]\" grid.mp4"
 echo
 echo $CMD
 
-# MAX_VIDEO=$(((WIDTH * HEIGHT) - 1))
-# for ((V=0;V<=MAX_VIDEO;V++)); 
-# do 
-#    echo $V
-# done
-
-
+# Some sample ffmpeg calls
 
 # delay (clone first frame)
 # ffmpeg -i background.mp4 -i front.mp4 -filter_complex "[0]tpad=start_duration=2:start_mode=clone[bg];[bg][1]overlay" output.mp4
