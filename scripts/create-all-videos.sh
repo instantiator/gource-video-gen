@@ -45,7 +45,7 @@ while [ -n "$1" ]; do
   shift
 done
 
-echo "Generating all videos..."
+echo "Creating all videos..."
 echo Combine repositories: $COMBINE
 echo Anonymise: $ANON
 
@@ -57,7 +57,7 @@ if $COMBINE; then
   # empty working directory
   rm -rf $WORK/*
 
-  # copy in all supplementary logs
+  # copy in all supplementary logs (don't fail if not found)
   cp repos/*.log.txt $WORK/
 
   # generate repository logs

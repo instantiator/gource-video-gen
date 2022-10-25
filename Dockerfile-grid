@@ -7,4 +7,4 @@ RUN apt-get install -y q-text-as-data bc
 WORKDIR /src
 ADD scripts/* /src/
 
-ENTRYPOINT ["/bin/bash", "./compose-video-grid.sh"]
+ENTRYPOINT ["/bin/bash", "./create-video-grid.sh"]
