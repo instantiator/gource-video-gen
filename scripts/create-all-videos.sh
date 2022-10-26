@@ -16,6 +16,7 @@ EOF
 # defaults
 COMBINE=false
 ANON=false
+SCRIPT_PATH=$(dirname "$0")
 
 # parameters
 while [ -n "$1" ]; do
@@ -92,7 +93,7 @@ if $COMBINE; then
   fi
 
   # build video from combined histories and captions
-  ./run-gource.sh \
+  $SCRIPT_PATH/run-gource.sh \
     --title "$TITLE" \
     --repo "$COMBINED_LOG_PATH" \
     --output-video-path "$SILENT_VIDEO_PATH" \
@@ -104,7 +105,7 @@ if $COMBINE; then
   AUDIO_PATH=mp3s/combined.mp3
   if [ -e $AUDIO_PATH ]
   then
-    ./apply-audio.sh \
+    $SCRIPT_PATH/apply-audio.sh \
       --input-video "$SILENT_VIDEO_PATH" \
       --input-audio "$AUDIO_PATH" \
       --output-video "$VIDEO_PATH"
@@ -146,7 +147,7 @@ else
     # generate video for the repo
     CAPTIONS_PATH=captions/$REPO_NAME.txt
     LOGO_PATH=avatars/$REPO_NAME.png
-    ./run-gource.sh \
+    $SCRIPT_PATH/run-gource.sh \
       --title $REPO_NAME \
       --repo "$COMBINED_LOG_PATH" \
       --captions "$CAPTIONS_PATH" \
@@ -157,7 +158,7 @@ else
     AUDIO_PATH=mp3s/$REPO_NAME.mp3
     if [ -e $AUDIO_PATH ]
     then
-      ./apply-audio.sh \
+      $SCRIPT_PATH/apply-audio.sh \
         --input-video "$SILENT_VIDEO_PATH" \
         --input-audio "$AUDIO_PATH" \
         --output-video "$VIDEO_PATH"
@@ -169,6 +170,5 @@ else
 fi
 
 # capture video durations (and rename video files by duration)
-./get-video-durations.sh > results/durations.csv
+$SCRIPT_PATH/get-video-durations.sh > results/durations.csv
 cat results/durations.csv
-

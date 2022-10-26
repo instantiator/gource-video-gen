@@ -12,9 +12,8 @@ Usage:
 EOF
 }
 
-# defaults
-COMBINE=false
-ANON=false
+# some defaults
+SCRIPT_PATH=$(dirname "$0")
 
 # parameters
 while [ -n "$1" ]; do
@@ -45,8 +44,7 @@ echo Width: $WIDTH
 echo Height: $HEIGHT
 
 # recalculate all video durations
-# TODO: put this back
-#./get-video-durations.sh > results/durations.csv
+$SCRIPT_PATH/get-video-durations.sh > results/durations.csv
 cat results/durations.csv
 
 # find the longest video
@@ -107,6 +105,8 @@ echo
 echo $CMD
 
 # Some sample ffmpeg calls
+# See also: https://ottverse.com/stack-videos-horizontally-vertically-grid-with-ffmpeg/
+
 
 # delay (clone first frame)
 # ffmpeg -i background.mp4 -i front.mp4 -filter_complex "[0]tpad=start_duration=2:start_mode=clone[bg];[bg][1]overlay" output.mp4

@@ -13,6 +13,7 @@ EOF
 
 #defaults
 RENAME=false
+SCRIPT_PATH=$(dirname "$0")
 
 # parameters
 while [ -n "$1" ]; do

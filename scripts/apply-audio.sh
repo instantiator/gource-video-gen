@@ -13,6 +13,9 @@ Usage:
 EOF
 }
 
+# defaults
+SCRIPT_PATH=$(dirname "$0")
+
 while [ -n "$1" ]; do
   case $1 in
   -iv | --input-video)
