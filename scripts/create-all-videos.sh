@@ -6,10 +6,13 @@ set -o pipefail
 usage() {
   cat << EOF
 Usage:
-    -c      --combine           Combine all repository histories and captions
-    -a      --anonymise         Anonymous videos - hide names, filenames, directories
-    -t      --title             Title for the combined video (use with --combine)
-    -h      --help              Prints this help message and exits
+    -c         --combine           Combine all repository histories and captions
+    -a <bool>  --anonymise <bool>  Anonymous videos - hide names, filenames, directories
+    -d <bool>  --no-date <bool>    Hide the date/time
+    -s         --no-skip           Don't skip quiet periods
+    -dl <secs> --day-length <secs> Seconds per day
+    -t         --title             Title for the combined video (use with --combine)
+    -h         --help              Prints this help message and exits
 EOF
 }
 
@@ -17,6 +20,9 @@ EOF
 COMBINE=false
 ANON=false
 SCRIPT_PATH=$(dirname "$0")
+NODATE=false
+NOSKIP=false
+SECS_PER_DAY=0.66
 
 # parameters
 while [ -n "$1" ]; do
@@ -28,6 +34,18 @@ while [ -n "$1" ]; do
   -a | --anonymise)
     shift
     ANON=$1
+    ;;
+  -d | --no-date)
+    shift
+    NODATE=$1
+    ;;
+  -s | --no-skip)
+    shift
+    NOSKIP=$1
+    ;;
+  -dl | --day-length)
+    shift
+    SECS_PER_DAY=$1
     ;;
   -t | --title)
     shift
@@ -49,6 +67,9 @@ done
 echo "Creating all videos..."
 echo Combine repositories: $COMBINE
 echo Anonymise: $ANON
+echo Hide date: $NODATE
+echo No skip: $NOSKIP
+echo "Day length: $SECS_PER_DAY (secs)"
 
 # working directory
 WORK=work
@@ -100,6 +121,9 @@ if $COMBINE; then
     --captions "$COMBINED_CAPTIONS_PATH" \
     --logo-path avatars/combined.png \
     --anonymise "$ANON" \
+    --no-date "$NODATE" \
+    --no-skip "$NOSKIP" \
+    --day-length "$SECS_PER_DAY" \
     --hide-root
 
   AUDIO_PATH=mp3s/combined.mp3
@@ -153,7 +177,10 @@ else
       --captions "$CAPTIONS_PATH" \
       --output-video-path "$SILENT_VIDEO_PATH" \
       --logo-path "$LOGO_PATH" \
-      --anonymise "$ANON"
+      --anonymise "$ANON" \
+      --no-skip "$NOSKIP" \
+      --day-length "$SECS_PER_DAY" \
+      --no-date "$NODATE"
 
     AUDIO_PATH=mp3s/$REPO_NAME.mp3
     if [ -e $AUDIO_PATH ]

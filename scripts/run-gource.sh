@@ -6,13 +6,16 @@ set -o pipefail
 usage() {
   cat << EOF
 Usage:
-    -r      --repo              Path to the repository to use
-    -o      --output-video-path Path to the output video to write to
-    -a      --anonymise         Anonymise (hide names, filenames, directories)
-    -c      --captions          Path to the captions file to use
-            --hide-root         Hides the root node (ie. when combining repositories)
-    -t      --title             Title for the video
-    -h      --help              Prints this help message and exits
+    -r         --repo              Path to the repository to use
+    -o         --output-video-path Path to the output video to write to
+    -a <bool>  --anonymise <bool>  Set true to anonymise (hide names, filenames, directories)
+    -d <bool>  --no-date <bool>    Set true to hide the time/date
+    -s <bool>  --no-skip <bool>    Don't skip quiet periods
+    -dl <secs> --day-length <secs> Seconds per day
+    -c         --captions          Path to the captions file to use
+               --hide-root         Hides the root node (ie. when combining repositories)
+    -t         --title             Title for the video
+    -h         --help              Prints this help message and exits
 EOF
 }
 
@@ -20,6 +23,9 @@ EOF
 HIDE_ROOT=false
 ANON=false
 SCRIPT_PATH=$(dirname "$0")
+NODATE=false
+AUTOSKIP=1
+SECS_PER_DAY=0.66
 
 # parameters
 while [ -n "$1" ]; do
@@ -48,6 +54,20 @@ while [ -n "$1" ]; do
     shift
     ANON=$1
     ;;
+  -d | --no-date)
+    shift
+    NODATE=$1
+    ;;
+  -s | --no-skip)
+    shift
+    if $1; then
+      AUTOSKIP=9999
+    fi
+    ;;
+  -dl | --day-length)
+    shift
+    SECS_PER_DAY=$1
+    ;;
   --hide-root)
     HIDE_ROOT=true
     ;;
@@ -75,6 +95,9 @@ echo Avatars path: $AVATARS_PATH
 echo Captions path: $CAPTIONS_PATH
 echo Logo path: $LOGO_PATH
 echo Anonymise: $ANON
+echo Hide date: $NODATE
+echo Autoskip: $AUTOSKIP
+echo "Day length: $SECS_PER_DAY"
 
 # backup previous video
 if [ -e $VIDEO_PATH ]
@@ -89,10 +112,10 @@ GOURCE_CMD=$(cat << EOC
     --path $REPO_PATH \
     --user-image-dir $AVATARS_PATH \
     --output-framerate 25 \
-    --seconds-per-day 0.66 \
+    --seconds-per-day $SECS_PER_DAY \
     --highlight-users \
     --file-filter .*/\.idea/.* \
-    --auto-skip-seconds 1 \
+    --auto-skip-seconds $AUTOSKIP \
     -o -
 EOC
 )
@@ -101,6 +124,9 @@ EOC
 HIDES=filenames
 if $ANON; then
   HIDES="$HIDES,dirnames,usernames"
+fi
+if $NODATE; then
+  HIDES="$HIDES,date"
 fi
 GOURCE_CMD="$GOURCE_CMD --hide $HIDES"
 

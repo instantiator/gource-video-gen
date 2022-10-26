@@ -6,7 +6,7 @@ Runs gource, creates videos. Simplifies mixing in audio, captions, a logo, and a
 
 * Docker
 
-## Usage
+## Generate videos
 
 * Run `./init-directories.sh` to create input and results directories.
 * Clone your favourite repositories inside `repos/`
@@ -20,10 +20,13 @@ Runs gource, creates videos. Simplifies mixing in audio, captions, a logo, and a
 
 ```
 Options:
-    -c      --combine           Combines histories and captions for all repositories found
-    -a      --anonymise         Generates anonymous video (no names, no directories, no filenames)
-    -t      --title             Title for the combined video (use with --combine)
-    -h      --help              Prints this help message and exits
+    -c         --combine              Combines histories and captions for all repositories found
+    -a         --anonymise            Generates anonymous video (no names, no directories, no filenames)
+    -d         --no-date              Hide the time/date
+    -s         --no-skip              Don't skip quiet periods
+    -dl <secs> --day-length <secs>    Seconds per day (default = 0.66)
+    -t         --title                Title for the combined video (use with --combine)
+    -h         --help                 Prints this help message and exits
 ```
 
 ### Activity
@@ -33,7 +36,7 @@ Options:
   * Uses `ffmpeg` to generate an mp4 from the gource output
   * Stores output mp4 in `results/`, named after the repository
 
-## Optional enhancements
+### Optional enhancements
 
 * Enabled combination of all repositories into a single video with `--combined` (or `-c`)
   * Set a title with `--title <title>` for the whole set.
@@ -110,9 +113,38 @@ Concatenate the timestamp and caption with:
 
 Here, `B2` contains the timestamp, and `C2` contains the caption you wish to use.
 
+## Generate video grid
+
+* First generate the videos you wish to use inside `results`. (You'll need a square number of videos, they'll all need the same dimensions, but different durations are ok.)
+* Launch inside Docker:
+
+  ```sh
+  ./generate-videos.sh -w <int> -h <int>
+  ```
+
+**NB. At current time, this script will return the ffmpeg command you need to run to generate the new grid video.**
+Just copy and paste it to use it.
+
+### Options
+
+```
+Options:
+    -w <n>  --width <n>         Number of videos wide
+    -h <n>  --height <n>        Number of videos tall
+            --help              Prints this help message and exits
+```
+
+### Activity
+
+* Scans `results/`, and uses the videos it finds in the order it finds them (not well defined yet)
+* Regenerates and uses `results/durations.csv` to determine by how much to delay each video
+* Uses `ffmpeg` to generate a grid of WxH videos, with each video delayed so they all finish together
+
 ## Known issues
 
 * Any title provided in `--title` has to be 1 word. I haven't figured out why inverted commas isn't helping.
+* Order of videos used by the grid script is not well defined.
+* Audio is not retained from videos in the grid script - you'll need to apply it yourself afterwards.
 
 ## Coming soon
 
